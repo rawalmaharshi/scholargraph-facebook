@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 </head>
 <body>
+<script src="bower_components/jquery/dist/jquery.min.js" charset="utf-8"></script>
 <script>
   // This is called with the results from from FB.getLoginStatus().
   function statusChangeCallback(response) {
@@ -37,7 +38,7 @@
       cookie     : true,  // enable cookies to allow the server to access
                           // the session
       xfbml      : true,  // parse social plugins on this page
-      version    : 'v2.8' // use graph api version 2.8
+      version    : 'v3.1' // use graph api version 2.8
     });
 
     // Now that we've initialized the JavaScript SDK, we call
@@ -71,24 +72,58 @@
   // successful.  See statusChangeCallback() for when this call is made.
   function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
-    FB.api('/me', function(response) {
+    FB.api('/me', {fields: 'name,email'}, function(response) {
       console.log(response);
+      var name = response.name;
+      var email = response.email;
+      var fb_userid = response.id;
       console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
-        var btn = document.createElement("BUTTON");
-        var t = document.createTextNode("Logout");
-        btn.appendChild(t);
+        // var btn = document.createElement("BUTTON");
+        // var t = document.createTextNode("Logout");
+        // btn.appendChild(t);
+        //yaha ek ajax request maar de jo fb_login karayegi (set session variables) .. uske baad welcome.php pe redirect maaregi
 
-      document.getElementById('logOut').appendChild(btn);
-      btn.onclick = function() {
-          FB.logout(function(response) {
-              // Person is now logged out
-              location.reload();
-          });
-      }
+        $.ajax({
+    		method  : "POST",
+    		url     : "backend/loginFB.php",
+    		data    : {
+    					email: email,
+              name: name,
+              fb_userid: fb_userid
+    				  },
+    		dataType: "json"
+    		}).done(function(res){
+    			if(res.status == "success"){
+    				$("#submit").addClass("disabled");
+    				$('#error').text(res.message);
+    				//redirect to main dashboard after 2 seconds.
+    				// window.location.href = "welcome.php";
+    			} else {
+    				$('#error').text(res.message);
+    			}
+    		  });
+
+      // document.getElementById('logOut').appendChild(btn);
+      // btn.onclick = function() {
+      //   window.location = 'backend/logout.php';
+      //     FB.logout(function(response) {
+      //         // Person is now logged out
+      //     });
+      // }
     });
   }
+//   FB.login(function(response) {
+//     if (response.authResponse) {
+//      console.log('Welcome!  Fetching your information.... ');
+//      FB.api('/me', function(response) {
+//        console.log('Good to see you, ' + response.name + '.');
+//      });
+//     } else {
+//      console.log('User cancelled login or did not fully authorize.');
+//     }
+// });
 </script>
 
 <!--
@@ -96,9 +131,9 @@
   the JavaScript SDK to present a graphical Login button that triggers
   the FB.login() function when clicked.
 -->
-
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
+<div class="fb-login-button" data-width="338" data-max-rows="1" data-size="large" data-button-type="continue_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true"></div>
+<!-- <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+</fb:login-button> -->
 
 <div id="status">
 </div>
@@ -108,3 +143,9 @@
 
 </body>
 </html>
+<?php
+// session_start();
+//
+// print_r($_SESSION);
+
+ ?>

@@ -1,4 +1,9 @@
 <?php
+/*
+ * This is the facebook login using PHP SDK
+ * I have used JavaScript SDK instead
+ */
+
 if(!session_id()) {
     session_start();
     print_r($_SESSION);

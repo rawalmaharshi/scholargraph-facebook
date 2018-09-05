@@ -9,17 +9,17 @@ $date = date('Y-m-d');
 function &getConnection()
 {
 	//localhost
-    $host = 'localhost';
-    $db_name = 'scholargraph_facebook';
-    $username = 'root';
-    $password = '12345';
+    // $host = 'localhost';
+    // $db_name = 'scholargraph_facebook';
+    // $username = 'root';
+    // $password = '12345';
 
 	//Heroku
-	// $url = parse_url(getenv("DATABASE_URL"));
-	// $host = $url["host"];
-	// $db_name = substr($url["path"], 1);
-	// $username = $url["user"];
-	// $password = $url["pass"];
+	$url = parse_url(getenv("DATABASE_URL"));
+	$host = $url["host"];
+	$db_name = substr($url["path"], 1);
+	$username = $url["user"];
+	$password = $url["pass"];
 
 	try {
       $db = new PDO("mysql:host=$host;dbname=$db_name", $username, $password);

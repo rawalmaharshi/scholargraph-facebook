@@ -1,6 +1,7 @@
 <?php
 error_reporting(E_ALL);
 include_once('functions.php');
+session_start();
 // $username = $_POST['username'] = 'naasdf';
 // $email = $_POST['email'] = 'asdjk';
 // $password = $_POST['password'] = 'ABC123';
@@ -28,6 +29,13 @@ if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['passwor
 	} else{
       $res = qExecute("INSERT INTO users (email, user_name, password) VALUES('$email', '$username', '$password');");
   		if($res){
+        $fetch = qExecute("SELECT * FROM users WHERE email = '$email'");
+        $object = $fetch->fetchObject();
+        //set session variables for auto-login
+        $_SESSION['userid'] = $object->id;
+        $_SESSION['username'] = $object->user_name;
+        $_SESSION['useremail'] =  $object->email;
+
   			echo json_encode(array(
   			"status" => "success",
   			"message" => "Successfully registered with ScholarGraph. Login to Continue."

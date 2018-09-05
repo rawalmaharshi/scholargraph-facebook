@@ -1,11 +1,6 @@
 <?php
 error_reporting(E_ALL);
 include_once('functions.php');
-// $email = $_POST['email'] = 'naasdf';
-// $password = $_POST['password'] = 'ABC123';
-
-// print_r($_POST);
-// die();
 
 session_start();
 
@@ -19,7 +14,7 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
 	if($fetch->rowCount() == 0) {
 		echo json_encode(array(
 			"status" => "failed",
-			"message" => "Email doesn't exists."
+			"message" => "Email doesn't exist."
 		));
     die();
 	} else{
